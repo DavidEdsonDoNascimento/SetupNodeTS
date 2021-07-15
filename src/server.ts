@@ -17,32 +17,40 @@ app.get('/users', (req, res) => {
     return res.status(200).json({ users });
 })
 
-
-
 app.get('/ifood/restaurants', async (req, res) => {
     
     try{ 
 
         let restaurants = await RestaurantService.list();
 
-        restaurants.map(restaurant => {
-            
-            const data = new Promise<any>(async (resolve, reject) => {
+        await Promise.all(
+            restaurants.map(restaurant => {
+                
+                const data = new Promise<any>(async (resolve, reject) => {
 
-                return await fetch(`https://marketplace.ifood.com.br/v2/merchants/${restaurant.id}?channel=IFOOD`)
-                .then(response => response.json())
-                .then(r => resolve(r))
-                .catch(err => reject(err));
-            });
+                    const url = `https://marketplace.ifood.com.br/v2/merchants/${restaurant.id}?channel=IFOOD`;
+                    const timeout = 500;
 
-            data
-            .then(result => {
-                restaurant.name = result.name;
-                restaurant.open = result.available;
+                    const timer = setTimeout(() => {
+                        reject(`fetch to ${url} exceeded ${timeout} ms`);
+                    }, timeout);
+
+                    return await fetch(url)
+                    .then(response => response.json())
+                    .then(r => resolve(r))
+                    .catch(err => reject(err))
+                    .finally(() => clearTimeout(timer));
+                });
+
+                data
+                .then(result => {
+                    restaurant.name = result.name;
+                    restaurant.open = result.available;
+                })
+                .catch(err => console.log(err));
+
             })
-            .catch(err => console.log(err));
-
-        });
+        );
 
         return res.status(200).json({ restaurants });
     

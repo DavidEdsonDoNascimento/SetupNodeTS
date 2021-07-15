@@ -6,7 +6,7 @@
   "author": "David Edson <david.contato.tec@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev:server": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --ignore-watch node_modules --no-notify --inspect -- src/server.ts"
+    "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --ignore-watch node_modules --no-notify --inspect -- src/server.ts"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
