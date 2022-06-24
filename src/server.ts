@@ -4,7 +4,7 @@ import RestaurantService from '@services/RestaurantService';
 import fetch from 'node-fetch';
 import { User } from '@models/UserModel';
 
-
+const PORT = 3333;
 const app = express();
 
 app.get('/', (req, res) => {
@@ -17,15 +17,18 @@ app.get('/users', (req, res) => {
     return res.status(200).json({ users });
 })
 
+/**
+ * Lista restaurantes do ifood e seus status
+ */
 app.get('/ifood/restaurants', async (req, res) => {
-    
-    try{ 
+
+    try {
 
         let restaurants = await RestaurantService.list();
 
         await Promise.all(
             restaurants.map(restaurant => {
-                
+
                 const data = new Promise<any>(async (resolve, reject) => {
 
                     const url = `https://marketplace.ifood.com.br/v2/merchants/${restaurant.id}?channel=IFOOD`;
@@ -36,27 +39,27 @@ app.get('/ifood/restaurants', async (req, res) => {
                     }, timeout);
 
                     return await fetch(url)
-                    .then(response => response.json())
-                    .then(r => resolve(r))
-                    .catch(err => reject(err))
-                    .finally(() => clearTimeout(timer));
+                        .then(response => response.json())
+                        .then(r => resolve(r))
+                        .catch(err => reject(err))
+                        .finally(() => clearTimeout(timer));
                 });
 
                 data
-                .then(result => {
-                    restaurant.name = result.name;
-                    restaurant.open = result.available;
-                })
-                .catch(err => console.log(err));
+                    .then(result => {
+                        restaurant.name = result.name;
+                        restaurant.open = result.available;
+                    })
+                    .catch(err => console.log(err));
 
             })
         );
 
         return res.status(200).json({ restaurants });
-    
-    } catch (err){
-        return res.status(400).json({ message: err.message})    
+
+    } catch (err) {
+        return res.status(400).json({ message: err.message })
     }
 });
 
-app.listen(3333);
+app.listen(PORT, () => { console.log(`API running in port: ${PORT}`) });
