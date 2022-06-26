@@ -42,3 +42,23 @@ yarn tsc
 yarn add tsconfig-paths -D
 ```
 * go to package.json and add tsconfig-paths/register in scripts.dev
+
+### install eslint and run
+
+```js
+yarn add eslint -D
+yarn eslint --init
+```
+
+#### eslint configuration
+
+* to check syntax, find problems, and enforce code style
+* javascript modules (import/export)
+* none of these
+* Yes or No TS
+* Use popular code style guide
+* airbnb or Standard
+* formar files to JSON
+* copy dependencies and run with yarn but no install eslint
+* go to .eslintrc.json and configure as is in this project
+
