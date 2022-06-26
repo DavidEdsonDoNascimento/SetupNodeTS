@@ -62,3 +62,11 @@ yarn eslint --init
 * copy dependencies and run with yarn but no install eslint
 * go to .eslintrc.json and configure as is in this project
 
+<hr>
+
+### install Jest
+
+```js
+yarn add jest @types/jest -D
+yarn jest --init
+```
